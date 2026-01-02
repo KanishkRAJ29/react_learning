@@ -1,0 +1,84 @@
+
+
+
+/* Root container */
+.tree {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  font-size: 14px;
+  line-height: 1.4;
+  color: #111827;
+}
+
+/* Each logical node block */
+.tree__node {
+  margin: 2px 0;
+}
+
+/* The row that contains the arrow + label */
+.tree__row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  /* depth-aware padding using CSS variable --level (set in markup) */
+  padding-left: calc(var(--level, 1) * 16px);
+  user-select: none;
+}
+
+/* Clickable label area */
+.tree__label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Make clickable affordance */
+.tree__label--clickable {
+  cursor: pointer;
+}
+
+/* Arrow icon implemented in CSS (no image/svg) */
+.tree__arrow {
+  width: 12px;
+  height: 12px;
+  display: inline-block;
+  flex: 0 0 12px;
+  position: relative;
+  transform-origin: 50% 50%;
+  transition: transform 160ms ease;
+  /* transform-only for GPU compositing */
+}
+
+/* the actual triangle using pseudo-element to avoid extra DOM */
+.tree__arrow::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  transform: translate(-50%, -50%) rotate(0deg);
+  border-style: solid;
+  border-width: 5px 4px 0 4px;
+  /* small triangle pointing up by default */
+  border-color: #444 transparent transparent transparent;
+}
+
+/* default collapsed state: point right (rotate 90deg) */
+.tree__arrow.is-expandable::before {
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+
+/* open state: rotate to point down */
+.tree__arrow.is-open::before {
+  transform: translate(-50%, -50%) rotate(180deg);
+}
+
+/* For nodes that are not expandable, hide the arrow space */
+.tree__arrow.is-hidden {
+  visibility: hidden;
+}
+
+/* Children group */
+.tree__group {
+  margin-top: 2px;
+}

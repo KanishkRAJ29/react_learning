@@ -19,22 +19,35 @@ export function TreeNodeItem({ node, level }: TreeNodeItemProps) {
     }
     setIsExpanded((prev) => !prev);
   }
-
+  const levelStyle={["--level" as any]:level}
   return (
-    <div>
+    <div className="tree__node" style={levelStyle}>
       {/*Tree Item*/}
-      <div role="treeitem" aria-level={level}
+      <div className="tree__row" role="treeitem" aria-level={level}
       aria-expanded={hasChildren?isExpanded:undefined}
       >
-        <div style={{ paddingLeft: (level - 1) * 16,cursor: hasChildren?"pointer":"default" }} onClick={toggle}>
-          {hasChildren&&(isExpanded?"||":">")}
-          
-          {node.label}</div>
+        <span
+          className={
+            "tree__arrow " +
+            (hasChildren ? "is-expandable " : "is-hidden ") +
+            (isExpanded ? "is-open" : "")
+          }
+          onClick={toggle}
+          aria-hidden={true}
+        />
+        <div
+          className={
+            "tree__label " + (hasChildren ? "tree__label--clickable" : "")
+          }
+          onClick={toggle}
+        >
+          {node.label}
+        </div>
       </div>
 
       {/*child group*/}
       {hasChildren && isExpanded && node.children &&(
-        <div role="group">
+        <div className="tree__group" role="group">
           {node.children.map((child) => (
             <TreeNodeItem 
             key={child.id} 
