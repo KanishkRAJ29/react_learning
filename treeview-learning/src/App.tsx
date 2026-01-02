@@ -1,3 +1,4 @@
+import { TreeView } from "./components/TreeView";
 import { makeSmallTree } from "./utils/generateTestTree";
 
 export default function App() {
@@ -8,7 +9,8 @@ export default function App() {
       <h1>TreeView Learning Playground</h1>
 
       {/* TreeView will be mounted here later */}
-      <pre>{JSON.stringify(treeData, null, 2)}</pre>
+      <TreeView data={treeData}/>
+      
     </div>
   );
 }
