@@ -1,4 +1,4 @@
-import { memo, useState } from "react";
+import { useState } from "react";
 import type { TreeNode } from "../types/tree";
 
 interface TreeNodeItemProps {
@@ -9,7 +9,7 @@ interface TreeNodeItemProps {
   parentActive?: boolean;
 }
 
-function TreeNodeItemInner({
+export function TreeNodeItem({
   node,
   level,
   activeId,
@@ -34,29 +34,24 @@ function TreeNodeItemInner({
     setActiveId(next ? node.id : null);
   }
   const levelStyle = { ["--level" as any]: level };
-  const rowClass =
-    "tree__row " +
-    (isActive ? "is-active " : "") +
-    (!isActive && parentActive ? "is-child-of-active " : "") +
-    (isExpanded && !isActive ? "is-expanded-passive " : "");
-
-  const arrowClass =
-    "tree__arrow " +
-    (hasChildren ? "is-expandable " : "is-hidden ") +
-    (isExpanded ? "is-open" : "");
   return (
     <div className="tree__node" style={levelStyle}>
       {/*Tree Item*/}
       <div
         className={
-          rowClass
+          "tree__row " +
+          (isActive ? "is-active " : "") +
+          (!isActive && parentActive ? "is-child-of-active " : "")
         }
         role="treeitem"
-        aria-level={level}
+        aria-level={level }
         aria-expanded={hasChildren ? isExpanded : undefined}
       >
         <span
-          className={arrowClass
+          className={
+            "tree__arrow " +
+            (hasChildren ? "is-expandable " : "is-hidden ") +
+            (isExpanded ? "is-open" : "")
           }
           onClick={toggle}
           aria-hidden={true}
@@ -75,7 +70,7 @@ function TreeNodeItemInner({
       {hasChildren && isExpanded && node.children && (
         <div className="tree__group" role="group">
           {node.children.map((child) => (
-            <MemoizedTreeNodeItem
+            <TreeNodeItem
               key={child.id}
               node={child}
               level={level + 1}
@@ -89,8 +84,3 @@ function TreeNodeItemInner({
     </div>
   );
 }
-
-const MemoizedTreeNodeItem = memo(TreeNodeItemInner);
-
-export { MemoizedTreeNodeItem as TreeNodeItem };
-//prevents re-render of a node if its props didn’t change when parent re-renders.
