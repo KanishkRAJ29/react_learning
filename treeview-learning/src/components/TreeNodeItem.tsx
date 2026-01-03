@@ -4,27 +4,48 @@ import type { TreeNode } from "../types/tree";
 interface TreeNodeItemProps {
   node: TreeNode;
   level: number;
+  activeId: string | null;
+  setActiveId: (id: string) => void;
+  parentActive?: boolean;
 }
 
-export function TreeNodeItem({ node, level }: TreeNodeItemProps) {
+export function TreeNodeItem({
+  node,
+  level,
+  activeId,
+  setActiveId,
+  parentActive = false,
+}: TreeNodeItemProps) {
   const hasChildren = Boolean(
     (node.children && node.children.length > 0) || node.hasChildren
   );
-
+  const isActive = activeId === node.id;
+  const isChildOfActive = parentActive === true;
   const [isExpanded, setIsExpanded] = useState(false);
 
   function toggle() {
     if (!hasChildren) {
       return;
     }
-    setIsExpanded((prev) => !prev);
+    const next = !isExpanded;
+    setIsExpanded(next);
+
+    // only set active when node becomes expanded; clear on collapse
+    setActiveId(next ? node.id : "");
   }
-  const levelStyle={["--level" as any]:level}
+  const levelStyle = { ["--level" as any]: level };
   return (
     <div className="tree__node" style={levelStyle}>
       {/*Tree Item*/}
-      <div className="tree__row" role="treeitem" aria-level={level}
-      aria-expanded={hasChildren?isExpanded:undefined}
+      <div
+        className={
+          "tree__row " +
+          (isActive ? "is-active " : "") +
+          (!isActive && parentActive ? "is-child-of-active " : "")
+        }
+        role="treeitem"
+        aria-level={level + 1}
+        aria-expanded={hasChildren ? isExpanded : undefined}
       >
         <span
           className={
@@ -46,14 +67,17 @@ export function TreeNodeItem({ node, level }: TreeNodeItemProps) {
       </div>
 
       {/*child group*/}
-      {hasChildren && isExpanded && node.children &&(
+      {hasChildren && isExpanded && node.children && (
         <div className="tree__group" role="group">
           {node.children.map((child) => (
-            <TreeNodeItem 
-            key={child.id} 
-            node={child} 
-            level={level + 1}
-             />
+            <TreeNodeItem
+              key={child.id}
+              node={child}
+              level={level + 1}
+              activeId={activeId}
+              setActiveId={setActiveId}
+              parentActive={isActive}
+            />
           ))}
         </div>
       )}

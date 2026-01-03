@@ -82,3 +82,51 @@
 .tree__group {
   margin-top: 2px;
 }
+
+/* Active expanded node (dark) */
+.tree__row.is-active {
+  background-color: rgba(99, 102, 241, 0.18);
+  color: #fff;
+}
+
+/* Expanded but not active (light) */
+.tree__row.is-expanded-passive {
+  background-color: rgba(99, 102, 241, 0.08);
+}
+
+/* Very subtle hover */
+.tree__row:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.tree__row.is-child-of-active {
+  background-color: rgba(99, 102, 241, 0.06);
+}
+
+.tree__row .tree__label {
+  color: inherit;
+}
+
+/* Ensure text is readable on active rows */
+.tree__row.is-active .tree__label {
+  color: black;
+}
+
+/* Sidebar container */
+.sidebar {
+  width: 260px;
+  /* VS Code-like width */
+  height: 100vh;
+  /* full viewport height */
+  overflow-y: auto;
+  /* scroll if tree is long */
+  border-right: 1px solid #e5e7eb;
+  background-color: #ffffff;
+  padding: 8px;
+}
+
+/* Optional dark theme */
+.sidebar.dark {
+  background-color: #0f172a;
+  color: #e5e7eb;
+}

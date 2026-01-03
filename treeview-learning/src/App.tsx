@@ -6,10 +6,12 @@ export default function App() {
 
   return (
     <div style={{ padding: 20 }}>
-      <h1>TreeView Learning Playground</h1>
+      <h1>TreeView Learning </h1>
 
-      {/* TreeView will be mounted here later */}
+      <aside className="sidebar">
       <TreeView data={treeData}/>
+
+      </aside>
       
     </div>
   );
