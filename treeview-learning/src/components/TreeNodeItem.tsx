@@ -1,15 +1,15 @@
-import { useState } from "react";
+import { memo, useState } from "react";
 import type { TreeNode } from "../types/tree";
 
 interface TreeNodeItemProps {
   node: TreeNode;
   level: number;
   activeId: string | null;
-  setActiveId: (id: string) => void;
+  setActiveId: (id: string|null) => void;
   parentActive?: boolean;
 }
 
-export function TreeNodeItem({
+function TreeNodeItemInner({
   node,
   level,
   activeId,
@@ -20,7 +20,7 @@ export function TreeNodeItem({
     (node.children && node.children.length > 0) || node.hasChildren
   );
   const isActive = activeId === node.id;
-  const isChildOfActive = parentActive === true;
+
   const [isExpanded, setIsExpanded] = useState(false);
 
   function toggle() {
@@ -31,27 +31,32 @@ export function TreeNodeItem({
     setIsExpanded(next);
 
     // only set active when node becomes expanded; clear on collapse
-    setActiveId(next ? node.id : "");
+    setActiveId(next ? node.id : null);
   }
   const levelStyle = { ["--level" as any]: level };
+  const rowClass =
+    "tree__row " +
+    (isActive ? "is-active " : "") +
+    (!isActive && parentActive ? "is-child-of-active " : "") +
+    (isExpanded && !isActive ? "is-expanded-passive " : "");
+
+  const arrowClass =
+    "tree__arrow " +
+    (hasChildren ? "is-expandable " : "is-hidden ") +
+    (isExpanded ? "is-open" : "");
   return (
     <div className="tree__node" style={levelStyle}>
       {/*Tree Item*/}
       <div
         className={
-          "tree__row " +
-          (isActive ? "is-active " : "") +
-          (!isActive && parentActive ? "is-child-of-active " : "")
+          rowClass
         }
         role="treeitem"
-        aria-level={level + 1}
+        aria-level={level}
         aria-expanded={hasChildren ? isExpanded : undefined}
       >
         <span
-          className={
-            "tree__arrow " +
-            (hasChildren ? "is-expandable " : "is-hidden ") +
-            (isExpanded ? "is-open" : "")
+          className={arrowClass
           }
           onClick={toggle}
           aria-hidden={true}
@@ -70,7 +75,7 @@ export function TreeNodeItem({
       {hasChildren && isExpanded && node.children && (
         <div className="tree__group" role="group">
           {node.children.map((child) => (
-            <TreeNodeItem
+            <MemoizedTreeNodeItem
               key={child.id}
               node={child}
               level={level + 1}
@@ -84,3 +89,8 @@ export function TreeNodeItem({
     </div>
   );
 }
+
+const MemoizedTreeNodeItem = memo(TreeNodeItemInner);
+
+export { MemoizedTreeNodeItem as TreeNodeItem };
+//prevents re-render of a node if its props didn’t change when parent re-renders.
